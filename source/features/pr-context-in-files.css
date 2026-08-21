@@ -34,3 +34,35 @@
 .rgh-pr-context .markdown-body {
 	font-size: 14px;
 }
+
+.rgh-pr-context-check {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 2px 0;
+	font-size: 13px;
+}
+
+.rgh-pr-context-check-passing {
+	color: var(--fgColor-success);
+}
+
+.rgh-pr-context-check-pending {
+	color: var(--fgColor-attention);
+}
+
+.rgh-pr-context-check-failing {
+	color: var(--fgColor-danger);
+}
+
+.rgh-pr-context-merge-actions {
+	display: flex;
+	gap: 8px;
+	margin-top: 8px;
+	padding-top: 8px;
+	border-top: 1px solid var(--borderColor-muted);
+}
+
+.rgh-pr-context-merged {
+	color: var(--fgColor-done);
+}
