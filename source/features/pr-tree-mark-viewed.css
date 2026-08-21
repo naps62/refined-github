@@ -29,6 +29,19 @@ li[role='treeitem']:hover > .rgh-tree-viewed-toggle {
 	background: var(--bgColor-neutral-muted);
 }
 
+.rgh-tree-viewed-toggle::before {
+	content: '✓';
+}
+
+li.rgh-tree-viewed-partial > .rgh-tree-viewed-toggle::before {
+	content: '–';
+}
+
+li.rgh-tree-viewed-partial > .rgh-tree-viewed-toggle {
+	opacity: 0.9;
+	color: var(--fgColor-attention);
+}
+
 li.rgh-tree-viewed > .rgh-tree-viewed-toggle,
 li.rgh-tree-viewed-dir > .rgh-tree-viewed-toggle {
 	opacity: 0.9;

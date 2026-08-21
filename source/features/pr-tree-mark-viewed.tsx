@@ -48,10 +48,9 @@ function syncTree(): void {
 		}
 
 		const files = $$(treeFileRow, dir);
-		dir.classList.toggle(
-			'rgh-tree-viewed-dir',
-			files.length > 0 && files.every(file => file.classList.contains('rgh-tree-viewed')),
-		);
+		const viewed = files.filter(file => file.classList.contains('rgh-tree-viewed')).length;
+		dir.classList.toggle('rgh-tree-viewed-dir', files.length > 0 && viewed === files.length);
+		dir.classList.toggle('rgh-tree-viewed-partial', viewed > 0 && viewed < files.length);
 	}
 }
 
@@ -86,7 +85,7 @@ function addButton(row: HTMLElement): void {
 			className="rgh-tree-viewed-toggle"
 			type="button"
 			aria-label="Toggle viewed"
-		>✓</button>
+		/>
 	);
 	button.addEventListener('click', onToggleClick);
 	row.append(button);
