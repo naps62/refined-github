@@ -48,8 +48,14 @@ li.rgh-tree-viewed-dir > .rgh-tree-viewed-toggle {
 	color: var(--fgColor-success);
 }
 
-li.rgh-tree-viewed {
+li.rgh-tree-viewed,
+li.rgh-tree-viewed-dir {
 	opacity: 0.5;
+}
+
+/* Avoid compounding when both a dir and its files are dimmed */
+li.rgh-tree-viewed-dir li.rgh-tree-viewed {
+	opacity: 1;
 }
 
 .rgh-tree-hide-viewed li.rgh-tree-viewed,
