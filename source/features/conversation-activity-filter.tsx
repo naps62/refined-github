@@ -128,35 +128,12 @@ function processItem(item: HTMLElement): void {
 }
 
 const filterAttribute = 'data-rgh-conversation-activity-filter';
-const filterContainer = [
-	// PR
-	'[class^="prc-PageLayout-PageLayoutWrapper"]',
-	// Issue
-	'[class*="IssueViewer-module__mainContainer"]',
-];
 
 function applyState(targetState: State): void {
-	$(filterContainer).setAttribute(filterAttribute, serializeState(targetState));
+	$('#repo-content-pjax-container').setAttribute(filterAttribute, serializeState(targetState));
 
 	activityFilterState.set(targetState);
 	FilterSetting.set(targetState);
-}
-
-function keepStateApplied(container: Element, signal: AbortSignal): void {
-	const reapply = (): void => {
-		const serialized = serializeState(get(activityFilterState));
-		if (serialized && container.getAttribute(filterAttribute) !== serialized) {
-			container.setAttribute(filterAttribute, serialized);
-		}
-	};
-
-	reapply();
-
-	const observer = new MutationObserver(reapply);
-	observer.observe(container, {attributes: true, attributeFilter: [filterAttribute]});
-	signal.addEventListener('abort', () => {
-		observer.disconnect();
-	});
 }
 
 async function addWidget(anchor: Element): Promise<void> {
@@ -226,9 +203,6 @@ async function init(signal: AbortSignal): Promise<void> {
 	);
 
 	observe(timelineItem, processItem, {signal});
-	observe(filterContainer, container => {
-		keepStateApplied(container, signal);
-	}, {signal});
 	globalThis.addEventListener('hashchange', uncollapseTargetedComment, {signal});
 }
 
