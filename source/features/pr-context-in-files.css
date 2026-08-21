@@ -1,0 +1,36 @@
+.rgh-pr-context {
+	margin: 8px 0 16px;
+	padding: 12px 16px;
+	border: 1px solid var(--borderColor-default);
+	border-radius: 6px;
+	background: var(--bgColor-default);
+}
+
+.rgh-pr-context-bottom {
+	margin-top: 16px;
+}
+
+.rgh-pr-context-comment {
+	padding: 8px 0;
+	border-top: 1px solid var(--borderColor-muted);
+}
+
+.rgh-pr-context-comment:first-of-type {
+	border-top: none;
+}
+
+.rgh-pr-context-comment-header {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin-bottom: 4px;
+	color: var(--fgColor-muted);
+}
+
+.rgh-pr-context-comment-header img {
+	border-radius: 50%;
+}
+
+.rgh-pr-context .markdown-body {
+	font-size: 14px;
+}
