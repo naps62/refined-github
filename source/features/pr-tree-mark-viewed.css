@@ -1,0 +1,42 @@
+[role='tree'] li[role='treeitem'] {
+	position: relative;
+}
+
+.rgh-tree-viewed-toggle {
+	position: absolute;
+	top: 2px;
+	right: 2px;
+	z-index: 2;
+	padding: 0 4px;
+	font-size: 12px;
+	line-height: 20px;
+	border: none;
+	border-radius: 4px;
+	background: none;
+	color: var(--fgColor-muted);
+	opacity: 0;
+	cursor: pointer;
+}
+
+li[role='treeitem']:hover > .rgh-tree-viewed-toggle {
+	opacity: 1;
+}
+
+.rgh-tree-viewed-toggle:hover {
+	background: var(--bgColor-neutral-muted);
+}
+
+li.rgh-tree-viewed > .rgh-tree-viewed-toggle,
+li.rgh-tree-viewed-dir > .rgh-tree-viewed-toggle {
+	opacity: 0.6;
+	color: var(--fgColor-success);
+}
+
+li.rgh-tree-viewed {
+	opacity: 0.5;
+}
+
+.rgh-tree-hide-viewed li.rgh-tree-viewed,
+.rgh-tree-hide-viewed li.rgh-tree-viewed-dir {
+	display: none !important;
+}
