@@ -137,6 +137,8 @@ import './features/unclip-checks.js';
 import './features/quick-review.js';
 import './features/pr-jump-to-first-non-viewed-file.js';
 import './features/pr-tree-mark-viewed.js';
+import './features/failing-checks-first.js';
+import './features/collapse-boring-files.js';
 import './features/keyboard-navigation.js';
 import './features/pr-first-commit-title.js';
 import './features/clean-repo-filelist-actions.js';

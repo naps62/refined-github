@@ -1,0 +1,23 @@
+.rgh-fcf:not(.rgh-fcf-show-all) .rgh-fcf-passing {
+	display: none !important;
+}
+
+.rgh-fcf-toggle {
+	display: block;
+	width: 100%;
+	padding: 4px 8px;
+	border: none;
+	background: none;
+	font-size: 12px;
+	text-align: left;
+	color: var(--fgColor-muted);
+	cursor: pointer;
+}
+
+.rgh-fcf-toggle:hover {
+	color: var(--fgColor-accent);
+}
+
+.rgh-fcf.rgh-fcf-show-all .rgh-fcf-toggle {
+	color: var(--fgColor-accent);
+}
