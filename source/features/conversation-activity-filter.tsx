@@ -8,27 +8,27 @@ import {get} from 'svelte/store';
 import features from '../feature-manager.js';
 import getCommentAuthor from '../github-helpers/get-comment-author.js';
 import {registerHotkey} from '../github-helpers/hotkey.js';
-import {activityFilterState, type State, states} from '../helpers/conversation-activity-filter.js';
+import {activityFilterState, type Category, categories, parseState, serializeState, type State} from '../helpers/conversation-activity-filter.js';
 import delay from '../helpers/delay.js';
 import onetime from '../helpers/onetime.js';
 import observe from '../helpers/selector-observer.js';
 import ConversationActivityFilter from './conversation-activity-filter.svelte';
 
-const SessionPageSetting = {
-	get key(): string {
-		return `rgh-conversation-activity-filter-state:${location.pathname}`;
-	},
+const FilterSetting = {
+	key: 'rgh-conversation-activity-filter-selection',
 
 	set(value: State): void {
-		sessionStorage.setItem(this.key, value);
+		localStorage.setItem(this.key, serializeState(value));
 	},
 
-	get(): State | undefined {
-		return sessionStorage.getItem(this.key) as State | undefined;
+	get(): Set<Category> | undefined {
+		const raw = localStorage.getItem(this.key);
+		return raw === null ? undefined : parseState(raw);
 	},
 };
 
 const hiddenClassName = 'rgh-conversation-activity-filtered-event';
+const commitClassName = 'rgh-conversation-activity-commit';
 const collapsedClassName = 'rgh-conversation-activity-collapsed-comment';
 const botClassName = 'rgh-conversation-activity-bot-comment';
 const minorFixesIssuePages = [
@@ -46,8 +46,9 @@ const timelineItem = [
 const comment = ['.comment-body', '.react-issue-comment'];
 
 function processTimelineEvent(item: HTMLElement): void {
-	// Don't hide commits in PR conversation timelines #5581
+	// Commits are their own category so they can be toggled separately #5581
 	if (pageDetect.isPR() && elementExists('.TimelineItem-badge .octicon-git-commit', item)) {
+		item.classList.add(commitClassName);
 		return;
 	}
 
@@ -123,17 +124,17 @@ const filterContainer = [
 ];
 
 function applyState(targetState: State): void {
-	$(filterContainer).setAttribute(filterAttribute, targetState);
+	$(filterContainer).setAttribute(filterAttribute, serializeState(targetState));
 
 	activityFilterState.set(targetState);
-	SessionPageSetting.set(targetState);
+	FilterSetting.set(targetState);
 }
 
 function keepStateApplied(container: Element, signal: AbortSignal): void {
 	const reapply = (): void => {
-		const state = get(activityFilterState);
-		if (state !== 'showAll' && container.getAttribute(filterAttribute) !== state) {
-			container.setAttribute(filterAttribute, state);
+		const serialized = serializeState(get(activityFilterState));
+		if (serialized && container.getAttribute(filterAttribute) !== serialized) {
+			container.setAttribute(filterAttribute, serialized);
 		}
 	};
 
@@ -170,27 +171,31 @@ function uncollapseTargetedComment(): void {
 	}
 }
 
-function switchToNextFilter(): void {
-	const stateNames = Object.keys(states);
-	const nextIndex = stateNames.indexOf(get(activityFilterState)) + 1;
-	const nextState = stateNames.length > nextIndex ? stateNames[nextIndex] : stateNames[0];
+let lastSelection: State = new Set(Object.keys(categories) as Category[]);
 
-	applyState(nextState as State);
+function toggleFilter(): void {
+	const current = get(activityFilterState);
+	if (current.size > 0) {
+		lastSelection = current;
+		applyState(new Set());
+	} else {
+		applyState(lastSelection);
+	}
 }
 
 async function init(signal: AbortSignal): Promise<void> {
-	const initialState = SessionPageSetting.get()
+	const initialState = FilterSetting.get()
 		?? (minorFixesIssuePages.some(url => location.href.startsWith(url))
-			? 'hideAllNoise' // Automatically hide resolved comments on "Minor codebase updates and fixes" issue pages
-			: 'showAll');
+			? parseState('events bots resolved') // Automatically hide noise on "Minor codebase updates and fixes" issue pages
+			: new Set<Category>());
 	activityFilterState.set(initialState);
 
 	const initialSetupOnce = onetime(() => {
-		if (initialState !== 'showAll') {
+		if (initialState.size > 0) {
 			applyState(initialState);
 		}
 
-		registerHotkey('h', switchToNextFilter, {signal});
+		registerHotkey('h', toggleFilter, {signal});
 	});
 
 	observe(
@@ -222,7 +227,7 @@ void features.add(import.meta.url, {
 		pageDetect.isConversation,
 	],
 	shortcuts: {
-		h: 'Cycle through conversation activity filters',
+		h: 'Toggle the conversation activity filter',
 	},
 	init,
 });

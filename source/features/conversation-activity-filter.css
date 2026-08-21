@@ -1,21 +1,11 @@
-[data-rgh-conversation-activity-filter='hideEvents'] {
-	.rgh-conversation-activity-filtered-event {
-		display: none;
-		/* For debugging purposes */
-		/* display: block !important; */
-		/* outline: solid 5px #f00; */
-	}
-}
-
-[data-rgh-conversation-activity-filter='hideAllNoise'] {
-	.rgh-conversation-activity-filtered-event,
-	.rgh-conversation-activity-bot-comment,
-	.rgh-conversation-activity-collapsed-comment,
-	.js-resolvable-timeline-thread-container[data-resolved='true'],
-	.minimized-comment {
-		display: none !important;
-		/* For debugging purposes */
-		/* display: block !important; */
-		/* outline: solid 5px #f00; */
-	}
+[data-rgh-conversation-activity-filter~='events'] .rgh-conversation-activity-filtered-event,
+[data-rgh-conversation-activity-filter~='commits'] .rgh-conversation-activity-commit,
+[data-rgh-conversation-activity-filter~='bots'] .rgh-conversation-activity-bot-comment,
+[data-rgh-conversation-activity-filter~='resolved'] .rgh-conversation-activity-collapsed-comment,
+[data-rgh-conversation-activity-filter~='resolved'] .js-resolvable-timeline-thread-container[data-resolved='true'],
+[data-rgh-conversation-activity-filter~='resolved'] .minimized-comment {
+	display: none !important;
+	/* For debugging purposes */
+	/* display: block !important; */
+	/* outline: solid 5px #f00; */
 }

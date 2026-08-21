@@ -7,8 +7,9 @@
 	import DomChef from '../components/dom-chef.svelte';
 	import {
 		activityFilterState,
+		categories,
+		type Category,
 		type State,
-		states,
 	} from '../helpers/conversation-activity-filter.js';
 	import {isSmallDevice} from '../helpers/dom-utils.js';
 
@@ -20,16 +21,22 @@
 
 	const baseId = crypto.randomUUID();
 
-	function selectState(targetState: State): void {
-		activityFilterState.set(targetState);
-		onStateChange(targetState);
+	function toggleCategory(category: Category): void {
+		const next = new Set($activityFilterState);
+		if (next.has(category)) {
+			next.delete(category);
+		} else {
+			next.add(category);
+		}
+
+		onStateChange(next);
 	}
 </script>
 <action-menu
 	class={`d-inline-block position-relative lh-condensed-ultra v-align-middle ${
 		withMargin ? 'ml-2' : ''
 	}`}
-	data-select-variant="single"
+	data-select-variant="multiple"
 >
 	<focus-group direction="vertical" mnemonics retain>
 		<button
@@ -43,9 +50,9 @@
 			<span class="Button-content">
 				<span
 					class="Button-visual Button-leadingVisual"
-					class:mr-0={$activityFilterState === 'showAll' || $activityFilterState === 'hideAllNoise'}
+					class:mr-0={$activityFilterState.size === 0}
 				>
-					{#if $activityFilterState !== 'showAll'}
+					{#if $activityFilterState.size > 0}
 						<DomChef as={EyeClosedIcon} class="color-fg-danger" />
 					{:else}
 						<DomChef as={EyeIcon} />
@@ -53,9 +60,9 @@
 				</span>
 				<span class="Button-label lh-condensed-ultra">
 					<span
-						hidden={$activityFilterState !== 'hideEvents'}
+						hidden={$activityFilterState.size === 0}
 						class="v-align-text-top color-fg-danger"
-					>events</span>
+					>{$activityFilterState.size}</span>
 				</span>
 				<span class="Button-visual Button-trailingVisual">
 					<DomChef as={TriangleDownIcon} />
@@ -80,20 +87,20 @@
 							role="menu"
 							class="ActionListWrap--inset ActionListWrap"
 						>
-							{#each Object.entries(states) as [itemState, label] (itemState)}
+							{#each Object.entries(categories) as [category, label] (category)}
 								<li
 									data-targets="action-list.items"
 									role="none"
 									class="ActionListItem"
 								>
 									<button
-										data-state={itemState}
+										data-state={category}
 										id={`item-${crypto.randomUUID()}`}
 										type="button"
-										role="menuitemradio"
+										role="menuitemcheckbox"
 										class="ActionListContent"
-										aria-checked={itemState === $activityFilterState}
-										onclick={() => selectState(itemState as State)}
+										aria-checked={$activityFilterState.has(category as Category)}
+										onclick={() => toggleCategory(category as Category)}
 									>
 										<span
 											class="ActionListItem-visual ActionListItem-action--leading"
@@ -104,7 +111,7 @@
 											/>
 										</span>
 										<span class="ActionListItem-label">
-											{label}
+											Hide {label.toLowerCase()}
 										</span>
 									</button>
 								</li>
@@ -115,7 +122,7 @@
 				{#if !isSmallDevice()}
 					<div class="Overlay-footer Overlay-footer--divided py-2 tmp-py-2">
 						<span class="color-fg-muted">
-							Press <kbd>h</kbd> to cycle through filters,
+							Press <kbd>h</kbd> to toggle the filter,
 							<br />
 							even when the dropdown is closed
 						</span>
