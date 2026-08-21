@@ -85,6 +85,13 @@ function processReview(review: HTMLElement): void {
 		mainComment.classList.add(copilotClassName);
 	}
 
+	// The "Copilot AI reviewed" header row; its author link sits outside any comment or thread
+	const copilotReviewHeaderAuthor = $$optional('a.author[data-hovercard-type="copilot"]', review)
+		.find(author => !author.closest('.timeline-comment, .js-resolvable-timeline-thread-container'));
+	if (copilotReviewHeaderAuthor) {
+		copilotReviewHeaderAuthor.closest('.TimelineItem')?.classList.add(copilotClassName);
+	}
+
 	// Don't combine the selectors or use early returns without understanding what a thread or thread comment is
 	// Resolved thread are handled by the CSS thanks to [data-resolved="true"]
 	const unresolvedThreads = $$optional('.js-resolvable-timeline-thread-container[data-resolved="false"]', review);
