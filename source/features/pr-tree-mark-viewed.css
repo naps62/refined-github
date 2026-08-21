@@ -15,37 +15,45 @@
 	border: none;
 	border-radius: 6px;
 	background: none;
-	font-size: 14px;
-	color: var(--fgColor-muted);
-	opacity: 0.45;
 	cursor: pointer;
-}
-
-li[role='treeitem']:hover > .rgh-tree-viewed-toggle {
-	opacity: 1;
 }
 
 .rgh-tree-viewed-toggle:hover {
 	background: var(--bgColor-neutral-muted);
 }
 
+/* The chip carrying the state */
 .rgh-tree-viewed-toggle::before {
 	content: '✓';
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 18px;
+	height: 18px;
+	border-radius: 4px;
+	font-size: 12px;
+	background: var(--bgColor-neutral-muted);
+	color: var(--fgColor-muted);
+	opacity: 0.7;
+}
+
+li[role='treeitem']:hover > .rgh-tree-viewed-toggle::before,
+.rgh-tree-viewed-toggle:hover::before {
+	opacity: 1;
+}
+
+li.rgh-tree-viewed > .rgh-tree-viewed-toggle::before,
+li.rgh-tree-viewed-dir > .rgh-tree-viewed-toggle::before {
+	background: var(--bgColor-success-emphasis);
+	color: var(--fgColor-onEmphasis);
+	opacity: 1;
 }
 
 li.rgh-tree-viewed-partial > .rgh-tree-viewed-toggle::before {
 	content: '–';
-}
-
-li.rgh-tree-viewed-partial > .rgh-tree-viewed-toggle {
-	opacity: 0.9;
-	color: var(--fgColor-attention);
-}
-
-li.rgh-tree-viewed > .rgh-tree-viewed-toggle,
-li.rgh-tree-viewed-dir > .rgh-tree-viewed-toggle {
-	opacity: 0.9;
-	color: var(--fgColor-success);
+	background: var(--bgColor-attention-emphasis);
+	color: var(--fgColor-onEmphasis);
+	opacity: 1;
 }
 
 li.rgh-tree-viewed,
