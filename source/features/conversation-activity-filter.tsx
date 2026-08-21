@@ -1,7 +1,7 @@
 import './conversation-activity-filter.css';
 
 import * as pageDetect from 'github-url-detection';
-import {$, $$, $$optional, closestElement, elementExists} from 'select-dom';
+import {$, $$, $$optional, $optional, closestElement, elementExists} from 'select-dom';
 import {mount} from 'svelte';
 import {get} from 'svelte/store';
 
@@ -31,6 +31,7 @@ const hiddenClassName = 'rgh-conversation-activity-filtered-event';
 const commitClassName = 'rgh-conversation-activity-commit';
 const collapsedClassName = 'rgh-conversation-activity-collapsed-comment';
 const botClassName = 'rgh-conversation-activity-bot-comment';
+const copilotClassName = 'rgh-conversation-activity-copilot-summary';
 const minorFixesIssuePages = [
 	'https://github.com/refined-github/refined-github/issues/3686',
 	'https://github.com/refined-github/refined-github/issues/6000',
@@ -78,7 +79,13 @@ function processDismissedReviewEvent(item: HTMLElement): void {
 }
 
 function processReview(review: HTMLElement): void {
-	const hasMainComment = elementExists('.js-comment[id^=pullrequestreview] .timeline-comment', review);
+	const mainComment = $optional('.js-comment[id^=pullrequestreview] .timeline-comment', review);
+	const hasMainComment = Boolean(mainComment);
+
+	// Tag Copilot's top-level review summary; its inline threads are left alone
+	if (mainComment && getCommentAuthor(mainComment) === 'Copilot[bot]') {
+		mainComment.classList.add(copilotClassName);
+	}
 
 	// Don't combine the selectors or use early returns without understanding what a thread or thread comment is
 	// Resolved thread are handled by the CSS thanks to [data-resolved="true"]

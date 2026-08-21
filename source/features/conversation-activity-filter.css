@@ -3,7 +3,11 @@
 [data-rgh-conversation-activity-filter~='bots'] .rgh-conversation-activity-bot-comment,
 [data-rgh-conversation-activity-filter~='resolved'] .rgh-conversation-activity-collapsed-comment,
 [data-rgh-conversation-activity-filter~='resolved'] .js-resolvable-timeline-thread-container[data-resolved='true'],
-[data-rgh-conversation-activity-filter~='resolved'] .minimized-comment {
+[data-rgh-conversation-activity-filter~='resolved'] .minimized-comment,
+/* "This branch has not been deployed" box in the merge area (React view + classic fallback) */
+[data-rgh-conversation-activity-filter~='deployments'] section[aria-label*='eploy' i],
+[data-rgh-conversation-activity-filter~='deployments'] .branch-action-item:has(.octicon-rocket),
+[data-rgh-conversation-activity-filter~='copilot'] .rgh-conversation-activity-copilot-summary {
 	display: none !important;
 	/* For debugging purposes */
 	/* display: block !important; */

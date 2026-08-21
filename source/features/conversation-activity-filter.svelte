@@ -20,6 +20,15 @@
 	const {onStateChange, withMargin = false}: Props = $props();
 
 	const baseId = crypto.randomUUID();
+	const allCategories = Object.keys(categories) as Category[];
+
+	function toggleAll(): void {
+		onStateChange(
+			$activityFilterState.size === allCategories.length
+				? new Set()
+				: new Set(allCategories),
+		);
+	}
 
 	function toggleCategory(category: Category): void {
 		const next = new Set($activityFilterState);
@@ -87,6 +96,33 @@
 							role="menu"
 							class="ActionListWrap--inset ActionListWrap"
 						>
+							<li
+								data-targets="action-list.items"
+								role="none"
+								class="ActionListItem"
+							>
+								<button
+									id={`item-${crypto.randomUUID()}`}
+									type="button"
+									role="menuitemcheckbox"
+									class="ActionListContent"
+									aria-checked={$activityFilterState.size === allCategories.length}
+									onclick={toggleAll}
+								>
+									<span
+										class="ActionListItem-visual ActionListItem-action--leading"
+									>
+										<DomChef
+											as={CheckIcon}
+											class="ActionListItem-singleSelectCheckmark"
+										/>
+									</span>
+									<span class="ActionListItem-label text-bold">
+										Hide all
+									</span>
+								</button>
+							</li>
+							<li class="ActionList-sectionDivider" role="separator"></li>
 							{#each Object.entries(categories) as [category, label] (category)}
 								<li
 									data-targets="action-list.items"

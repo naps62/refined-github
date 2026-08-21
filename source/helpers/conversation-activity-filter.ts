@@ -5,6 +5,8 @@ export const categories = {
 	commits: 'Commits',
 	bots: 'Bot comments',
 	resolved: 'Resolved & hidden comments',
+	deployments: 'Deployment notices',
+	copilot: 'Copilot review summaries',
 } as const;
 
 export type Category = keyof typeof categories;
