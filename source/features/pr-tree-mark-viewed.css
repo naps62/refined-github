@@ -24,7 +24,7 @@
 
 /* The chip carrying the state */
 .rgh-tree-viewed-toggle::before {
-	content: '✓';
+	content: '';
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -44,6 +44,7 @@ li[role='treeitem']:hover > .rgh-tree-viewed-toggle::before,
 
 li.rgh-tree-viewed > .rgh-tree-viewed-toggle::before,
 li.rgh-tree-viewed-dir > .rgh-tree-viewed-toggle::before {
+	content: '✓';
 	background: var(--bgColor-success-emphasis);
 	color: var(--fgColor-onEmphasis);
 	opacity: 1;
