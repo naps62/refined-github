@@ -140,6 +140,7 @@ import './features/pr-tree-mark-viewed.js';
 import './features/failing-checks-first.js';
 import './features/collapse-boring-files.js';
 import './features/pr-context-in-files.js';
+import './features/pr-links-to-files.js';
 import './features/keyboard-navigation.js';
 import './features/pr-first-commit-title.js';
 import './features/clean-repo-filelist-actions.js';
