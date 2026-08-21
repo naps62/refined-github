@@ -114,17 +114,37 @@ function processItem(item: HTMLElement): void {
 	}
 }
 
+const filterAttribute = 'data-rgh-conversation-activity-filter';
+const filterContainer = [
+	// PR
+	'[class^="prc-PageLayout-PageLayoutWrapper"]',
+	// Issue
+	'[class*="IssueViewer-module__mainContainer"]',
+];
+
 function applyState(targetState: State): void {
-	const container = $([
-		// PR
-		'[class^="prc-PageLayout-PageLayoutWrapper"]',
-		// Issue
-		'[class*="IssueViewer-module__mainContainer"]',
-	]);
-	container.setAttribute('data-rgh-conversation-activity-filter', targetState);
+	$(filterContainer).setAttribute(filterAttribute, targetState);
 
 	activityFilterState.set(targetState);
 	SessionPageSetting.set(targetState);
+}
+
+function keepStateApplied(container: Element, signal: AbortSignal): void {
+	const reapply = (): void => {
+		const state = get(activityFilterState);
+		if (state !== 'showAll' && container.getAttribute(filterAttribute) !== state) {
+			container.setAttribute(filterAttribute, state);
+		}
+	};
+
+	reapply();
+
+	// React re-renders can drop the attribute after `applyState` set it
+	const observer = new MutationObserver(reapply);
+	observer.observe(container, {attributes: true, attributeFilter: [filterAttribute]});
+	signal.addEventListener('abort', () => {
+		observer.disconnect();
+	});
 }
 
 async function addWidget(anchor: Element): Promise<void> {
@@ -190,6 +210,10 @@ async function init(signal: AbortSignal): Promise<void> {
 	);
 
 	observe(timelineItem, processItem, {signal});
+	// Restore the filter when the container mounts late or is replaced by a re-render
+	observe(filterContainer, container => {
+		keepStateApplied(container, signal);
+	}, {signal});
 	globalThis.addEventListener('hashchange', uncollapseTargetedComment, {signal});
 }
 
