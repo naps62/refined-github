@@ -47,7 +47,6 @@ const timelineItem = [
 const comment = ['.comment-body', '.react-issue-comment'];
 
 function processTimelineEvent(item: HTMLElement): void {
-	// Commits are their own category so they can be toggled separately #5581
 	if (pageDetect.isPR() && elementExists('.TimelineItem-badge .octicon-git-commit', item)) {
 		item.classList.add(commitClassName);
 		return;
@@ -82,7 +81,6 @@ function processReview(review: HTMLElement): void {
 	const mainComment = $optional('.js-comment[id^=pullrequestreview] .timeline-comment', review);
 	const hasMainComment = Boolean(mainComment);
 
-	// Tag Copilot's top-level review summary; its inline threads are left alone
 	if (mainComment && getCommentAuthor(mainComment) === 'Copilot[bot]') {
 		mainComment.classList.add(copilotClassName);
 	}
@@ -147,7 +145,6 @@ function keepStateApplied(container: Element, signal: AbortSignal): void {
 
 	reapply();
 
-	// React re-renders can drop the attribute after `applyState` set it
 	const observer = new MutationObserver(reapply);
 	observer.observe(container, {attributes: true, attributeFilter: [filterAttribute]});
 	signal.addEventListener('abort', () => {
@@ -222,7 +219,6 @@ async function init(signal: AbortSignal): Promise<void> {
 	);
 
 	observe(timelineItem, processItem, {signal});
-	// Restore the filter when the container mounts late or is replaced by a re-render
 	observe(filterContainer, container => {
 		keepStateApplied(container, signal);
 	}, {signal});
